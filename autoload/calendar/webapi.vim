@@ -159,7 +159,7 @@ function! s:command(url, method, header, postfile, output) abort
     let command .= ' ' . quote . a:url . quote
     return command
   elseif executable('wget')
-    let command = 'wget  --server-response -q'
+    let command = 'wget -S  -q '
     let a:header['X-HTTP-Method-Override'] = a:method
     let command .= s:make_header_args(a:header, '--header=', quote)
     if a:postfile !=# ''
@@ -167,15 +167,17 @@ function! s:command(url, method, header, postfile, output) abort
     else
       let command .= ' --method=' . a:method
     endif
+     let command .= ' ' . quote . a:url . quote
      if a:output !=# ''
       let command .= ' -O ' . quote . a:output . quote   
       let command .= ' -a ' . quote . a:output . quote   
     else 
       let command .= ' -O- '
     endif
-    if 
+    if len(proxy) > 0 
       let command .= ' -e use_proxy=yes -e https_proxy=' . proxy
     endif
+    echo command
     return command
   else
     call calendar#echo#error_message('curl_wget_not_found')
