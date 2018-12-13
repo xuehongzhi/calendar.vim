@@ -103,11 +103,11 @@ Please use the official softwares for the commands.
 ## Additional Tips
 itchyny did an amazing work for us vim fans, send my best regards.
 His design is elegant with mvc framework.
-I just make a slight change in order to download google calendar events and tasks with https proxy.
-```1: use wget prefer to curl, cause I found there is proxy's reponse status in curl's output which will cause the prog not refresh the access_token
-```2: calendar lists' response information is in the response's header section not in the content
-```3: replace the calling of calendar#webapi#decode with built in function js_decode in handling the response
+just make a slight change in order to download google calendar events and tasks with https proxy.
+1: use wget prefer to curl, cause I found there is proxy's reponse status in curl's output which will cause the prog not refresh the access_token
+2: calendar lists' response information is in the response's header section not in the content
+3: replace the calling of calendar#webapi#decode with built in function js_decode in handling the response
 
 
-usage:
-```let g:calendar_proxy=ip:port    
+```usage:
+let g:calendar_proxy=ip:port    
