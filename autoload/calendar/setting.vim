@@ -97,6 +97,10 @@ function! s:google_task() abort
   return 0
 endfunction
 
+function! s:proxy() abort
+  return ''
+endfunction
+
 function! s:updatetime() abort
   return 200
 endfunction

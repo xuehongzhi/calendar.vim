@@ -146,7 +146,8 @@ endfunction
 
 function! s:command(url, method, header, postfile, output) abort
   let quote = s:_quote()
-  if executable('curl')
+  let proxy = calendar#setting#get('proxy')	
+  if !proxy && executable('curl')
     let command = 'curl -s -k -i -N -X ' . a:method
     let command .= s:make_header_args(a:header, '-H ', quote)
     if a:postfile !=# ''
@@ -158,7 +159,7 @@ function! s:command(url, method, header, postfile, output) abort
     let command .= ' ' . quote . a:url . quote
     return command
   elseif executable('wget')
-    let command = 'wget -O- --server-response -q'
+    let command = 'wget  --server-response -q'
     let a:header['X-HTTP-Method-Override'] = a:method
     let command .= s:make_header_args(a:header, '--header=', quote)
     if a:postfile !=# ''
@@ -166,9 +167,14 @@ function! s:command(url, method, header, postfile, output) abort
     else
       let command .= ' --method=' . a:method
     endif
-    let command .= ' ' . quote . a:url . quote
-    if a:output !=# ''
-      let command .= ' > ' . quote . a:output . quote . ' 2>&1'
+     if a:output !=# ''
+      let command .= ' -O ' . quote . a:output . quote   
+      let command .= ' -a ' . quote . a:output . quote   
+    else 
+      let command .= ' -O- '
+    endif
+    if 
+      let command .= ' -e use_proxy=yes -e https_proxy=' . proxy
     endif
     return command
   else

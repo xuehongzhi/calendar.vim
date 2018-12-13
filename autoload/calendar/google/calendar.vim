@@ -35,7 +35,7 @@ endfunction
 function! calendar#google#calendar#getCalendarList_response(id, response) abort
   let [_calendarlist, err; rest] = s:getdata(a:id)
   if a:response.status =~# '^2'
-    let cnt = calendar#webapi#decode(a:response.content)
+    let cnt = json_decode(join(a:response.header, '')) 
     let content = type(cnt) == type({}) ? cnt : {}
     if has_key(content, 'items') && type(content.items) == type([])
       let content.items = filter(deepcopy(content.items), 'get(v:val, "accessRole", "") ==# "owner"')
@@ -402,7 +402,12 @@ function! calendar#google#calendar#response(id, response) abort
   let [_download, err, j, i, timemin, timemax, year, month, id; rest] = s:getdata(a:id)
   let opt = { 'timeMin': timemin, 'timeMax': timemax, 'singleEvents': 'true' }
   if a:response.status =~# '^2'
-    let cnt = calendar#webapi#decode(a:response.content)
+    let cnt = {}
+    try
+       let cnt = js_decode(join(a:response.header, ''))
+    catch
+      
+    endtry
     let content = type(cnt) == type({}) ? cnt : {}
     if has_key(content, 'items')
       silent! call s:event_cache.new(id).new(year).new(month).save(i, content)
