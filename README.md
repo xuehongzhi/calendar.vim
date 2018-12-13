@@ -100,7 +100,7 @@ This software NEVER uploads your events and tasks to any other server except Goo
 However, if `wget` or `curl` command are replaced with malicious softwares, your events or tasks can be uploaded to other sites.
 Please use the official softwares for the commands.
 
-##Additional Tips
+## Additional Tips
 itchyny did an amazing work for us vim fans, send my best regards.
 His design is elegant with mvc framework.
 I just make a slight change in order to download google calendar events and tasks with https proxy.
