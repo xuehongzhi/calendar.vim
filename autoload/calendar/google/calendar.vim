@@ -406,7 +406,10 @@ function! calendar#google#calendar#response(id, response) abort
     try
        let cnt = js_decode(join(a:response.header, ''))
     catch
-      
+        try
+          let cnt = eval(join(a:response.header, ''))
+	catch
+	endtry
     endtry
     let content = type(cnt) == type({}) ? cnt : {}
     if has_key(content, 'items')
