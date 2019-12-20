@@ -2,7 +2,7 @@
 " Filename: autoload/calendar/webapi.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2018/10/23 23:04:10.
+" Last Change: 2019/12/03 12:48:49.
 " =============================================================================
 
 " Web interface.
@@ -135,7 +135,7 @@ function! s:request(json, async, url, param, postdata, method) abort
       call s:cache.delete(a:async.id)
     endif
     call calendar#async#new('calendar#webapi#callback(' . string(a:async.id) . ',' . string(a:async.cb) . ')')
-    if has('win32') || has('win64')
+    if has('win32')
       call calendar#util#system('cmd /c start /min ' . command)
     else
       let command .= ' &'
@@ -148,7 +148,7 @@ function! s:command(url, method, header, postfile, output) abort
   let quote = s:_quote()
   let proxy = calendar#setting#get('proxy')	
   if !proxy && executable('curl')
-    let command = 'curl -s -k -i -N -X ' . a:method
+    let command = 'curl --http1.1 --suppress-connect-headers -s -k -i -N -X ' . a:method
     let command .= s:make_header_args(a:header, '-H ', quote)
     if a:postfile !=# ''
       let command .= ' --data-binary @' . quote . a:postfile . quote
@@ -304,7 +304,7 @@ function! calendar#webapi#decode(json) abort
 endfunction
 
 function! calendar#webapi#open_url(url) abort
-  if has('win32') || has('win64')
+  if has('win32')
     silent! call calendar#util#system('cmd /c start "" "' . a:url . '"')
   elseif executable('xdg-open')
     silent! call calendar#util#system('xdg-open "' . a:url . '" &')
@@ -333,7 +333,7 @@ function! s:make_header_args(headdata, option, quote) abort
     let value = type(a:headdata[key]) == type('') || type(a:headdata[key]) == type(0) ? a:headdata[key] :
           \     type(a:headdata[key]) == type({}) ? '' :
           \     type(a:headdata[key]) == type([]) ? '[' . join(map(a:headdata[key], 's:make_header_args(v:val, a:option, a:quote)'), ',') . ']' : ''
-    if has('win16') || has('win32') || has('win64') || has('win95')
+    if has('win32')
       let value = substitute(value, '"', '"""', 'g')
     endif
     let args .= ' ' . a:option . a:quote . key . ': ' . value . a:quote
